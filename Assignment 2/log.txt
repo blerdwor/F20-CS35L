@@ -1,0 +1,44 @@
+Part 1:
+lnxsrv06=client, lnxsrv09=server
+
+[ssh-keygen]
+I used this to generate a new key and passphrase.
+
+[ssh-copy-id belle@lnxsrv09.seas.ucla.edu]
+When prompted,I typed in my SEAS password.
+
+[ssh belle@lnxsrv09.seas.ucla.edu]
+Again, I typed in my passphrase when prompted.
+
+[C-d]
+I quit that session and went back to lnxsrv06.
+
+[eval "$(ssh-agent)"]
+I used this command to start the ssh-agent.
+
+
+[ssh-add ~/.ssh/id_rsa]
+Then I did this command to save the key and entered passphrase when prompted.
+After that, I was able to ssh into lnxsrv09 without a password.
+
+Part 2:
+
+First, I downloaded Xming onto my laptop.
+On PuTTY, I loaded the SEASnet server and went to SSH. 
+Then I went to X11 and enabled X11 forwarding and MIT-MagicCookie-1.
+Then, I started the server and signed in.
+
+[xeyes] 
+This command displayed eyes in a new window.
+
+[ssh -X belle@lnxsrv09@seas.ucla.edu] and [xeyes] 
+This enabled me to use [xeyes] successfully on server 9. 
+
+Part 3:
+
+[ssh -AX belle@lnxsrv09.seas.ucla.edu]
+[ssh -AX belle@lnxsrv07.seas.ucla.edu]
+I hopped from server 6 to 9 to 7.
+To enable graphics display, I used the [-X] flag.
+I also used the [-A] flag to enable agent forwarding which allowed me to hop to server 7.
+I could've excluded the [-X] flag but then I wouldn't be able to display graphics on server 7.

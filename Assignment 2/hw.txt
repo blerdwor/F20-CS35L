@@ -1,0 +1,43 @@
+[gpg --version]
+I used this to check that I was using version 2 and the version was 2.0.22.
+
+[gpg --gen-key]
+I used this command to geenrate a keypair. 
+I then typed [1] to choose the RSA and RSA type of key.
+Then I typed [2048] for the size of the key.
+Next, I typed [0] and [y] to signify that I don't want the key to expire.
+Then I typed [Belle Lerdworatawee] when prompted for my name and [bellelee@g.ucla.edu] for my email.
+I did not type anything for the comment.
+After that I needed to type [O] for Okay and then I created a passphrase.
+
+[gpg --armor --export bellelee@g.ucla.edu > hw-pubkey.asc]
+To export the key in ASCII format, I used this command.
+
+[gpg --output hw-pubkey.sig --detach-sig hw-pubkey.asc]
+I typed this command to create a detached signature from the public key.
+I also typed in my passphrase when prompted to unlock the secret key.
+
+[gpg --verify hw-pubkey.sig hw-pubkey.asc]
+I typed this to verify the key signature.
+
+Homework Questions:
+
+1. I think that the network is still secure because the data is encrypted.
+The other team can see that information is going across, however, it is locked.
+Additionally, it's practically impossible to determine what the private key from a public key.
+
+(1) Everytime I do ssh, I need to initially type in my passphrase. 
+If the other teams had tapped my keyboard, then they would have my passphrase.
+However, they do not have my private key they still can't decrypt the data passing through the network.
+The network is still secure. 
+
+(2) If the team had gotten physical control of the USB, they would be able to look at the content in the .ssh file. 
+Since the team has access to the public and private key files, the network would no longer be secure as they could then decrypt the data running across. 
+
+2. Signatures verify the data and the signature shows when the data was last modified. 
+If someone else were to gain control of the file and modify the data and follow the steps I took to creating a signature, they would be able to succeed.
+Certificate authorities are one solution to this problem.
+They are third-parties that issue digital certificates by validating public key owner identities.
+Certificates are useful in veryfing the trustworthiness of the owner of the file. 
+
+pwd: 12345678910
