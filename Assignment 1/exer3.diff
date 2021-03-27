@@ -1,0 +1,16 @@
+4,5c4,5
+< <title>Assignment 1. Getting to know your system</title>
+< <meta charset='UTF-8'>
+---
+> <title>Assignment 42. Getting to know your system</title>
+> <meta charset='US_ASCII'>
+12c12
+< <h1>Assignment 1. Getting to know your system</h1>
+---
+> <h1>Assignment 42. Getting to know your system</h1>
+19c19
+< <!-- diff，在UNIX系統上的一個工具程式，它可以比較兩個檔案之間的不同。通常它被用來比較同一個檔案，在不同版本間的差異。它可以產生一個擴展名為.diff或.patch的檔案，這個檔案可以被另一個工具程式patch來使用。-->
+---
+> 
+125a126
+> 

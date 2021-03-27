@@ -1,0 +1,82 @@
+1. [man -k]
+I typed [man man] and then [\apropos].
+I found the -k option and read through the various other options.
+Then I tried [man -k find] and it found all files with "find" in the name.
+
+2. /usr/local/cs/bin/mv
+   /usr/bin/sh
+I typed [man which] to see what the command which does and it shows the path of shell commands.
+So then I typed [which mv] and [which sh] to find where they're located.
+
+3. ar (maintains, creates, modifies, and extracts from archives)
+   pr (converts text files for printing)
+   tr (translates/deletes characters)
+I did [cd /usr/bin] to move to that location.
+Then I used [find ?r -executable] to find the 2 character programs that ended in r.
+I also read [man find] to find the flag that limits find to only executable programs.
+Afterwards, I typed [man ar], [man pr], and [man tr] to see what they do in their name/description.
+
+4. /etc/alternatives/emacs
+I did [ls -l /usr/bin/emacs].
+
+5. /usr/bin/gcc (version 4.8.5)
+   /usr/local/cs/bin/gcc (version 10.2.0)
+I typed [gcc --version] and [/usr/bin/gcc --version] to find the version numbers.
+They're different files so they have different versions.
+
+6. u+sx - gives owner execute and set user/group ID upon execution permissions
+   o-w  - removes users not in the file's group write permission.
+I did [man chmod] and read the description.
+
+7. /usr/local/cs
+   /usr/local/cs/src/bash
+   /usr/local/cs/src/bash/RCS
+   /usr/local/cs/src/grep ; /usr/local/cs/src/grep/RCS ; 580 files
+I used [man find] to find which flags to use.
+Then I typed [find /usr/local/cs -mtime -28 -type d] to get the first 5 files.
+Then I typed [find /usr/local/cs -mtime -28 -type d | wc -l] to get the total number of files.
+
+8. 280 files
+First, I used [which find] to get find's location.
+Then I used the command [man find] and found [-type l] for listing symbolic links.
+I also read [man wc] and found that [-l] counts the number of newlines.
+I used [find /usr/bin -type l | wc -l] to get the number of files that are symbolic links.
+
+9. librom1394.so.0.3.0
+I read the flags in [man ls] and found that [-a] lists all files including hidden ones, and [-t] lists the files from newest to oldest.
+Then I typed [ls /usr/lib64 -alt] to list all the files.
+
+10. It gets its data from localedef.
+I used [man -k locale] and read through the outputs and saw localedef.
+Then I typed [man localedef] and read the description which says that it "compiles [charmaps and input files] and compiles them to a form usable by locale".
+
+11. downcase-dwim
+    downcase-region
+    downcase-word
+I entered emacs and typed [C-h a downcase].
+
+12. [C-M-r]: (isearch-backward-regexp) does incremental search backward for a regular expression
+    [C-M-s]: (isearch-forward-regexp) does incremental search forward for a regular expression
+    [C-M-t]: (transpose-sexps) transposes words (applies to sexps as well)
+    [C-M-u]: (backward-up-list) moves backward out of one level of parentheses
+    [C-M-v]: (scroll-other-window) scrolls next window upward ARG lines; or near full screen if no ARG
+I typed [C-h b] to display all the key bindings.
+Then I did [C-x o] to switch to the window with the keys, and [C-s] to start I-search.
+The I typed [C-M-r] to find the keystrokes.
+After that, I used the arrow keys to click on each description.
+
+13. C-g causes a quit directly.
+I typed [C-h b] to see all the key bindings.
+Then I did [C-x o] to switch to the window with the keys, and typed [C-s] and [C-g] to start I-search.
+After that, I used the arrow keys to click on the description.
+
+14. yank "reinstates ("pastes") the last stretch of killed text;" it pastes what was previously deleted
+    C-y is the keystroke.
+I held [C-h] to find which letter displays functions, and then typed [f] and then [yank] to find the yank function.
+
+15. dired shows the files . and .. , total = 327324
+    ls -l doesn't show the files . and .., total = 327240
+Their totals are also different so I think that dired shows hidden files while ls -l does not.
+I used [C-h f dired] to find the dired command which is [C-x d].
+After reading the description, I typed [C-x d /usr/bin] to use the dired command.
+Then, I compared the output to that of [ls -l] in another terminal window.
