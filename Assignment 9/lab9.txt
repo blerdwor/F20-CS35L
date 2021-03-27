@@ -1,0 +1,159 @@
+1. [cd ~eggert/src/gnu/emacs-CS-35L]
+   [du -sh .]
+Output: 577M    .
+   [du -sh .git]
+Output: 415M    .git
+
+577M - 415M = 462M bytes
+
+First, I went to the directory and then used du to find the size of the entire
+directory, which is 577M bytes. Then I used the same command to find the size
+of the .git folder which is 415M bytes. Since the "working files" is everything
+except the .git foler, taking the difference between the entire and directory
+and .git yields 462M bytes for the disk space representing the working files in
+the directory. The -sh option was to display the total size in human readable
+formats. 
+
+   [du .git | sort -h]
+Output:
+4       .git/branches
+4       .git/refs/heads/feature
+4       .git/refs/heads/features
+4       .git/refs/heads/fix
+4       .git/refs/heads/heads
+4       .git/refs/heads/old-branches
+4       .git/refs/heads/other-branches
+4       .git/refs/heads/scratch/joaot
+4       .git/refs/heads/scratch/np
+4       .git/refs/heads/scratch/ns
+4       .git/refs/heads/scratch/tzz
+4       .git/refs/remotes/origin
+4       .git/refs/tags
+8       .git/info
+8       .git/logs/refs/heads/features
+8       .git/logs/refs/heads/heads
+8       .git/logs/refs/heads/scratch/joaot
+8       .git/logs/refs/heads/scratch/np
+8       .git/logs/refs/remotes/origin
+8       .git/refs/remotes
+12      .git/logs/refs/heads/scratch/ns
+12      .git/logs/refs/remotes
+16      .git/logs/refs/heads/scratch/tzz
+24      .git/refs/heads/scratch
+52      .git/refs/heads
+56      .git/logs/refs/heads/fix
+60      .git/hooks
+68      .git/refs
+80      .git/logs/refs/heads/other-branches
+96      .git/logs/refs/heads/feature
+100     .git/logs/refs/heads/old-branches
+312     .git/logs/refs/heads/scratch
+756     .git/logs/refs/heads
+772     .git/logs/refs
+780     .git/logs
+7892    .git/objects/info
+415112  .git/objects/pack
+423008  .git/objects
+424356  .git
+
+The largest file in .git is the objects directory, which makes sense. The 
+objects directory is responsible for storing all the hashes, which could easily
+require a lot of space especially if many commits were made. The objects files
+also has compressed blobs, trees, and objects which take up space. The -h
+option used with sort will sort the output by numerical order.
+
+2. [git branch | wc -l]
+Output: 176 (local)
+   
+   [git branch -r | wc -l]
+Output: 177 (remote)
+
+   [git branch -a | wc -l]
+Output: 353 (all)
+
+176+177=353 (checks out)
+
+The -a branch lists all branches, -r lists remote branches, and no option
+outputs the local branches. I used wc to count the number of lines which is the
+same as counting the number of branches since each was on one line. I did the
+last command to check that the local and remote add up to the total.
+
+3. [git remote -v]
+Output:
+origin  /u/cs/fac/eggert/src/gnu/emacs (fetch)
+origin  /u/cs/fac/eggert/src/gnu/emacs (push)
+savannah        https://git.savannah.gnu.org/git/emacs.git (fetch)
+savannah        https://git.savannah.gnu.org/git/emacs.git (push)
+
+There are two repositories remote to the repository, and they're located at the
+urls next to the name. I used the hw hints to find the command and read the
+documentation to find the -v option which shows the urls.
+
+4. [git for-each-ref --count 10 --sort=-committerdate refs/heads/ --format='%(refname:short)'] 
+Output:
+master
+scratch/joaot/make-completion-at-point-function
+feature/windows-with-utils
+scratch/completion-api
+scratch/a-modest-completion-redesign-proposal
+scratch/fido-mode
+feature/gnus-select2
+feature/extend_face_id
+scratch/jit-lock-antiblink-cleaned-up
+emacs-26
+
+I also read the hints to get this command, and then after that I read the
+documentation for the options. The --count one specifies how many lines to
+display. The the --sort specifies what to sort by. There needs to be a - sign
+so that it places the earliest commits at the top. Then I included "refs/heads"
+to filter out only the commits in the head file. The last option formats the
+branches to only show the name.
+
+5. [git rev-list --count master]
+Output: 141268
+
+From the hints, I found that the command rev-list will list the number of
+commands in the branch name specififed. In this case, I needed to find how
+many commits were made on master. The --count lists the number of commits
+instead of all the commit hashes.
+
+6. [git rev-list --all --count]
+Output: 145595
+
+141268/145595 * 100 = 97.03%
+
+Then I used the --all option and --count to find the total number of commits.
+The number of commits in the master branch divided by the number of total
+commits yields the percentage 97%.
+
+7. [git shortlog -sn --since='2012-12-31' | head]
+Output:
+  3922  Eli Zaretskii
+  3795  Glenn Morris
+  3785  Paul Eggert
+  1887  Stefan Monnier
+  1833  Lars Ingebrigtsen
+  1671  Michael Albinus
+   671  Dmitry Gutov
+   604  Noam Postavsky
+   568  Juri Linkov
+   506  Alan Mackenzie
+
+The hints linked the documentation for shortlog, and on there I found the -s
+and the -n options to display a summary and also sort the output by number of
+commits per author instead of by alphabetical order. The --since flag will only
+get commits that are after the last day of 2012 which would be 2013 til now.
+Then the head command by default outputs the first 10 lines. 
+
+8. [gitk]
+Merge commits:
+0c06b93c1e467debd401eb0b3be4652fde14fa95
+abcb2e62dae6aa26308f7ac9efc89247f89cbe65
+98ac36efe4ce4bd3a0bca76fc73ce6c7abaa4371
+
+The hints mentioned that we could just list the commits that are merges. First,
+I made sure that Xming was running in the back so that I could use gitk to
+visualize the graph. Then I typed each of the 10 commit hashes in the SHAI box
+to find information on the commits. Merge commits would have two parents, so I
+inspected each of their parents. The 3 commits listed above each have two
+parents meaning that they're merges.
