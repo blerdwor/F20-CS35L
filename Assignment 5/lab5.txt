@@ -1,0 +1,143 @@
+[wget "https://web.cs.ucla.edu/classes/spring20/cs35L/assign/
+coreutils-with-bug.tar.gz"]
+I downloaded the tar file with this command and it was successful.
+
+[tar -xzvf coreutils-with-bug.tar.gz]
+Then I read the man page for tar to see which options I needed to unzip it.
+
+[./configure --prefix=/u/cs/ugrad/belle/CS35L/Week4/coreutils && make 
+&& make install]
+I tried to build the coreutils but I ran into an error with the build process.
+I suspect that the error in building coreutils is that futimens was the name
+for two different functions, and when futimens was called, the system didn't
+know which one to use.
+They also have different return types which conflict. One is int and the other
+one is extern int.
+
+Error:
+In file included from utimecmp.c:41:
+utimens.h:2:5: error: conflicting types for 'futimens'
+    2 | int futimens (int, char const *, struct timespec const [2]);
+      |     ^~~~~~~~
+In file included from utimecmp.h:25,
+                 from utimecmp.c:25:
+/usr/include/sys/stat.h:373:12: note: previous declaration of 'futimens' was he                                                                                         re
+  373 | extern int futimens (int __fd, const struct timespec __times[2]) __THRO                                                                                         W;
+      |            ^~~~~~~~
+
+[wget "https://web.cs.ucla.edu/classes/spring20/cs35L/assign/coreutils.diff"]
+[patch -p0 < coreutils.diff]
+I used the first command to download the patch file into the coreutils-with-bug
+file. Then I did [cat coreutils.diff] to see the path of the file which changes 
+were made to and they were lib/utimens.c so I didn't need to strip away any 
+slashes. Then I used the 2nd command to apply the patch file. I think this 
+patch fixed the multiple declaration error by renameing the one of the futimen 
+functions.
+
+Output:
+patching file lib/utimens.c
+patching file lib/utimens.h
+patching file src/copy.c
+patching file src/tee.c
+patching file src/touch.c
+
+[./configure --prefix=/u/cs/ugrad/belle/CS35L/Week5/coreutils && make && make install]
+I tried this command again to build the buggy version of ls in coreutils. It
+was successful this time. 
+
+[touch -d '1918-11-11 11:00 GMT' /run/user/$(id -u)/stamp-wwi-armistice]
+[touch /run/user/$(id -u)/stamp-now]
+[sleep 1]
+[touch /run/user/$(id -u)/stamp-now1]
+[TZ=UTC0 ~/CS35L/Week5/coreutils/bin/ls -lt --full-time /run/user/$(id -u)/stamp*]
+Output:
+-rw-r--r-- 1 belle csugrad 0 1918-11-11 11:00:00.000000000 +0000 /run/user/13570/stamp-wwi-armistice
+-rw-r--r-- 1 belle csugrad 0 2020-11-08 23:18:39.879001255 +0000 /run/user/13570/stamp-now1
+-rw-r--r-- 1 belle csugrad 0 2020-11-08 23:18:28.458611856 +0000 /run/user/13570/stamp-now
+[rm /run/user/$(id -u)/stamp*]
+
+I used the same commands on the Assignment page to recreate the bugs.
+The wwi-armistice file appears before stamp-now1 so it does seem to appear like
+it's from the future which is the bug.
+
+[gdb ~/CS35L/Week5/coreutils/bin/ls]
+[b sort-files]
+[b cmp_mtime]
+[r ~/CS35L/Week5/coreutils/bin/ls -lt --full-time /run/user/$(id -u)/stamp*]
+
+First I inspected ls.c on Github and found promising functions called
+sort_files and cmp_mtime. So when I started gdb, I set breakpoints at 
+those functions and ran the program.
+
+[list]
+[print sort_type]
+[s]
+[s]
+[b compare_mtime]
+After stepping through some lines, I found that the variable func was set to a
+function called compare_mtime so I set another breakpoint there.
+
+[s]
+[list]
+[display diff]
+[display a.tv_sec]
+[display b.tv_sec]
+
+diff Output:
+diff = 318678
+diff = 1075919519
+diff = 1075919528
+
+The next step took me to the cmp_mtime function, where I stepped into the
+timespec_cmp function. The timespec_cmp function determines the value of diff
+by subtracting a.tv_nsec from b.tv_nsec which I suspect could result in
+overflow. I tried to display the last two but gdb said "<optimized out>" when
+I tried to look at the values. The print command also didn't work. After that,
+I stepped through the program a couple of times, and continued to the main 
+function that handled printing. I think the bug is in the way the timespec_cmp
+function compares the file times so my next step is to edit the timespec_cmp
+file.
+
+[cd coreutils-with-bug/lib]
+[cp timespec.h fixed-timespec.h]
+[mv fixed-timespec.h ~/CS35L/Week5]
+[cd ../..]
+[vim fixed-timespec.h]
+[diff -u coreutils-with-bug/lib/timespec.h fixed-timespec.h > lab5.diff]
+[mv lab5.diff coreutils-with-bug]
+[cd coreutils-with-bug]
+[patch -p1 < lab5.diff]
+[make]
+[TZ=UTC0 ~/CS35L/Week5/coreutils-with-bug/src/ls -lt --full-time /run/user/$(id -u)/stamp*]
+
+Output:
+-rw-r--r-- 1 belle csugrad 0 2020-11-09 02:25:06.514293696 +0000 /run/user/13570/stamp-now1
+-rw-r--r-- 1 belle csugrad 0 2020-11-09 02:24:53.857862091 +0000 /run/user/13570/stamp-now
+-rw-r--r-- 1 belle csugrad 0 1918-11-11 11:00:00.000000000 +0000 /run/user/13570/stamp-wwi-armistice
+
+The timespec_cmp file is located in coreutils-with-bug so I go there and make a
+copy of that file. After that I moved it to a different folder and edited it.
+To make the patch file, I used the diff command with the -u option for 
+formatting. Afterwards I moved the patch file back into the coreutils-with-bug
+folder. The patch file had an extra file in its path so I used the -p1 to
+remove that. Applying the patch was successful and when I tested ls again to
+see if the bug had been fixed, ls produced the right output.
+
+[cd ~]
+[touch -d '1918-11-11 11:00 GMT' stamp-wwi-armistice]
+[touch now]
+[sleep 1]
+[touch now1]
+[TZ=UTC0 ls -lt --full-time]
+
+Output:
+-rw-r--r-- 1 belle csugrad       0 2054-12-17 17:28:16.000000000 +0000  stamp-wwi-armistice
+-rw-r--r-- 1 belle csugrad       0 2020-11-09 06:33:51.498569000 +0000  now1
+-rw-r--r-- 1 belle csugrad       0 2020-11-09 06:33:45.849534000 +0000  now
+
+I tested this on the SEASnet server and it produced the wrong output. In fact,
+it actually changed the year of stamp-wwi-armistice to 2054. On a Piazza 
+discussion, a TA said that the SEASNet file system used for the home 
+directory represents dates with a smaller number of bits. So time stamps would
+be inaccurate when the date is too old as there aren't enough bits to represent
+it.
