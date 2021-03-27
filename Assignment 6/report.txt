@@ -1,0 +1,259 @@
+1.
+
+First I wrote code to handle error checking for the arguments. I've worked
+with C before so I knew that argc is the number of arguments passed in and 
+*argc holds the arguments after executing the program. The code then checks
+if the number of arguments is three (executable + 2 arguments) and returns 
+an error message is this is false. If the arguments is correct, I move on to
+check the length of the two arguments by using the strlen function, returning
+an error if they are not the same length. After that, I decided to use a double
+for loop to iterate through the first argument and compare every character to
+each other. If any are the same, then this is an error.
+
+Next is the transliteration part. I learned how to use getchar() and putchar()
+from Week 5's assignment. I save the input character to an interger variable.
+Then I made a while to keep looping until the EOF which is a value of -1. Within
+the loop, I wrote a for loop to compare the character that was read in to all 
+the characters in the first argument; if it matches any of those characters,
+then I change the variable to the character that it needs to be changed to.
+After the for loop, I call putchar() to output the variable which may or may
+not have been updated since getchar().
+
+2.
+
+I watched some YouTube tutorials to get an idea of how to use read() and 
+write(). Initially, I tried to create a buffer array and read input into it.
+However, later I realized this wasn't what we needed to do and instead, I read
+a byte into a char variable one at a time.
+
+So I copied all the error handling from the tr2b.c file since this was the same.
+Then I copied the transliteration for loop and modified it. The modifications I
+made were changing the putchar() to write(). I read the man pages for read and 
+write to figure out what the codes for stdin, out, and err were. I read that
+read() will return -1 to signal that there is no more data to read it. So I
+changed the while loop to read in input while checking if the return of read is
+positive.
+
+3.
+
+[vim text.txt]
+[a]
+while holding down v: [yl 5000005p]
+
+I made a text file and typed in an a. Then I copied it and pasted it 5000005
+times so that the file in total would be at least 5,000,000 bytes. 
+
+3. a)
+
+[strace -c ./tr2b ab *9 < text.txt > toutput]
+
+Output:
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 61.59    0.001015           1       611           write
+ 30.83    0.000508           0       613           read
+  2.12    0.000035           3         9           mmap
+  2.00    0.000033           8         4           mprotect
+  1.03    0.000017           4         4           fstat
+  0.73    0.000012          12         1           munmap
+  0.49    0.000008           4         2           open
+  0.36    0.000006           6         1         1 access
+  0.30    0.000005           5         1           execve
+  0.24    0.000004           4         1           brk
+  0.18    0.000003           1         2           close
+  0.12    0.000002           2         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.001648                  1250         1 total
+
+[strace -c ./tr2u ab *9 < text.txt > uoutput]
+
+Output:
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 54.91   25.613248           5   5000006           write
+ 45.09   21.030236           4   5000008           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   46.643484              10000036         1 total
+
+tr2u makes a lot more system calls (about 8000% more) than tr2b. As expected,
+the bulk of the system calls for tr2u is read and write since it makes these
+calls per every byte.  
+
+3. b)
+
+[strace -c ./tr2b ab *9 < text.txt]
+
+Output:
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 90.25    0.011726           2      4883           write
+  7.95    0.001033           1       613           read
+  0.38    0.000049           5         9           mmap
+  0.35    0.000046          46         1           brk
+  0.32    0.000042          42         1           execve
+  0.27    0.000035           8         4           mprotect
+  0.13    0.000017           4         4           fstat
+  0.12    0.000015           7         2           open
+  0.08    0.000011          11         1           munmap
+  0.08    0.000010          10         1         1 access
+  0.05    0.000006           3         2           close
+  0.02    0.000003           3         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.012993                  5522         1 total
+
+[strace -c ./tr2u ab *9 < text.txt]
+
+Output:
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 54.83   25.393203           5   5000007         1 write
+ 45.17   20.917966           4   5000008           read
+  0.00    0.000048           6         7           mmap
+  0.00    0.000045          45         1           brk
+  0.00    0.000030           7         4           mprotect
+  0.00    0.000027          27         1           execve
+  0.00    0.000016           8         2           open
+  0.00    0.000011          11         1           munmap
+  0.00    0.000010          10         1         1 access
+  0.00    0.000007           3         2           fstat
+  0.00    0.000006           3         2           close
+  0.00    0.000002           2         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   46.311371              10000037         2 total
+
+This time, tr2b made almost quadruple the number of system calls when writing
+to the terminal as opposed to copying data to a file. tr2u made almost the same
+amount of system calls.
+
+4. 
+
+[time ./tr2b ab *9 < text.txt > bboutput]
+real    0m0.191s
+user    0m0.133s
+sys     0m0.011s
+
+[time ./tr2u ab *9 < text.txt > uuoutput]
+real    0m10.037s
+user    0m1.366s
+sys     0m8.625s
+
+The tr2u program runs way slower than the tr2b program since tr2b getchar()
+and putchar() are more optimized. The tr2u program has to read in each byte
+one at a time, which would result in slower run time.
+
+------------------------------Homework--------------------------------------
+
+I used to time command on files with different sizes to compare the performance
+of sfrob to sfrobu. Then to estimate the functions, I wrote a python function
+to fit a line to the data. I used the file lines as the x values and the real
+time as the y values.
+
+[time ./sfrobu < .*_input.txt] where .* is the number of lines in each file
+[time .sfrob < .*_input.txt] 
+
+lines      sfrobu   sfrob    
+-------------------------       
+0          0.003s   0.002
+10         0.000s   0.000
+100        0.003s   0.001
+1000       0.006s   0.000
+10,000     0.048s   0.003
+1,000,000  1.614s   0.020
+
+-------python code for function------------------------------------------
+from numpy import *
+from scipy.interpolate import *
+
+x = np.array([0, 10, 100, 1000, 10000,1000000])
+sfrob = np.array([0.003,0.000,0.003,0.006,0.048,1.641])
+sfrobu = np.array([0.002,0.000,0.001,0.000,0.003,0.020])
+
+from scipy.interpolate import *
+p1 = np.polyfit(x,sfrob,1)
+p2 = np.polyfit(x,sfrobu,1)
+print(p1)
+print(p2)
+
+Output:
+[1.63290294e-06 8.32591779e-03]
+[1.88603429e-08 1.15501979e-03]
+
+sfrob function:  CPU time = 0.0000016(number of input lines) + 0.0083
+sfrobu function: CPU time = 0.0000019(number of input lines) + 0.0012
+
+The sfrob program has a smaller slope which means that it runs slightly faster
+than the sfrobu program.
+
+-------------------------------------------------------------------------------
+
+[strace -c ./sfrobu < .*_input.txt]
+I used the strace on files sizes of 100,10000, and 1000000. Looking at the
+results below, it seems like the system calls brk() for file sizes that are
+relatively smaller. For larger files, the call to mmap() increases so I think
+that malloc calls that to find larger memory space. I think that realloc()
+calls mremap() based on the name and that it gets called a significant amount
+for the file with 1,000,000 bytes as memory would need to be reallocated to
+accommodate a file of that size.
+
+ % time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 75.54    0.001600           5       312           write
+ 24.46    0.000518           1       313           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         3           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         4           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.002118                   651         1 total
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 56.98    0.172959           5     31649           write
+ 42.91    0.130251           4     31651           read
+  0.05    0.000152           8        18           brk
+  0.01    0.000043           5         8           mmap
+  0.01    0.000036           9         4           mprotect
+  0.01    0.000024           8         3           open
+  0.01    0.000021          10         2           munmap
+  0.01    0.000019           4         4           fstat
+  0.00    0.000014           4         3           close
+  0.00    0.000003           3         1           arch_prctl
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.303522                 63345         1 total
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.30    5.722681           5   1036816           write
+ 44.70    4.625806           4   1036818           read
+  0.01    0.000676           1       618           mremap
+  0.00    0.000073           0       168           brk
+  0.00    0.000000           0         3           open
+  0.00    0.000000           0         3           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0        11           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         5           munmap
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   10.349236               2074453         1 total
+
