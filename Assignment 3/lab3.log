@@ -1,0 +1,128 @@
+1. [locale]
+   [export LC_ALL='C']
+First, I checked if the LC_CTYPE was 'C' and it wasn't.
+So I changed it using the second command and everything was type 'C'.
+
+2. [sort /usr/share/dict/words > words]
+This sorted the lines of the text file words.
+The second part [> words] redirected sort's stdout to a file named words.
+
+3. [wget -O assign3.html https://web.cs.ucla.edu/classes/fall20/cs35L/assign/
+   assign3.html]
+This saved the webpage into an html file and named the file as assign3.html.
+
+4. [tr -c 'A-Za-z' '[\n*]' < assign3.html]
+This replaced anything that wasn't an alphabetic character into a newline
+[<] directed assign3.html to tr's stdin.
+
+5. [tr -cs 'A-Za-z' '[\n*]' < assign3.html] 
+This "squeezed" all characters in the last set (newline) into one character.
+So it essentially removed all empty lines from the previous output.
+
+6. [tr -cs 'A-Za-z' '[\n*]' < assign3.html | sort]
+This sorted the previous output in alphabetical order.
+
+7. [tr -cs 'A-Za-z' '[\n*]' < assign3.html | sort -u]
+The -u flag on sort removed repeated words from the last output.
+
+8. [tr -cs 'A-Za-z' '[\n*]' < assign3.html | sort -u | comm - words]
+This piped sort's to comm. 
+comm used sort's output as the first file and 'words' as the second file
+comm outputed 3 columns:
+  1st one has words unique to assign3.html
+  2nd one has words unique to words
+  3rd one has words in both files
+
+9. [tr -cs 'A-Za-z' '[\n*]' < assign3.html | sort -u | comm -23 - words 
+   # ENGLISHCHECKER]
+It displayed only the first column from the previous output.
+In other words, it suppressed the 2nd and 3rd column.
+
+-----------buildwords---------------------------------------------------------
+
+10. [wget https://www.mauimapp.com/moolelo/hwnwdshw.htm]
+This created a copy of the webpage and saves it as a file called hwnwdshw.htm.
+
+11. [vim buildwords]
+I created a buildwords file to write the bash script in. I tested everything 
+on the command line before finalizing it and putting it in the script. First 
+I came up with a regex expression to extract every line that had a word so I 
+used grep to get those lines. However, it wasn't still selecting the empty 
+parts so then I read the man page for grep and found the -o which only selects
+the matching parts. Then I needed to delete the first two lines as they didn't
+contain words. Next I used sed to remove all instances of ?, </u>, <u>, <td>,
+<\td>, and empty lines. All the English words were on odd lines so I used sed
+to remove all the even lines. Lastly, I used tr to do some minor touch ups like
+translating all capitalcase to lowercase,changing the ` and - to ' and spaces,
+making all words on a new line. Then I removed all newlines and sorted the list
+to create a Hawaiian dictionary. 
+
+12. [chmod 700 buildwords]
+I needed to change the permissions of the file in order to execute it.
+
+13. [cat hwnwdshw.htm | ./buildwords > hwords]
+I saved the output of buildwords into hwords.
+
+14. [tr '[:upper:]' '[:lower:]' < assign3.html | tr -cs 'A-Za-z' '[\n*]' | sort 
+    -u | comm -23 - words > wrongE]
+I added a tr command to the previous ENGLISHCHECKER to translate uppercase to 
+lowercase. The entire command also saved the output into a file called wrongE.
+
+15. [wc -w wrongE]
+This returned 51 words.
+
+16. [tr '[:upper:]' '[:lower:]' < assign3.html | tr -cs 'A-Za-z' '[\n*]' | sort
+     -u | comm -23 - hwords > wrongH]
+This is the HAWAIIANCHECKER.
+
+17. [wc -w wrongW]
+This returned 567 words.
+
+18. [comm -12 wrongE hwords]
+lau, wiki
+This outputs words in both files so these words are mispelled English words
+that are correct Hawaiian ones. There weren't many words so I just counted 
+them; there were 3 words total.
+
+19. [comm -12 wrongH words]
+    [comm -12 wrongH words | wc -l]
+violate, remove
+There are 519 words that I got from the second command.
+
+-----------poornames----------------------------------------------------------
+
+My idea for poornames was to use ls to list all the file names and then use grep
+to select all the poorly named files. My regex expression captures all files 
+with good names and then -v inverts the selection. 
+
+As an overview, the script checks for errors in the argument, and if there are 
+none, it calls the function findBadFiles to find all the bad files in the same
+directory. The recursive function calls the findBadFiles function on a directory
+to get the immediate files, and then calls itself on every subdirectory. 
+
+The checks were straightforward to write since they were mostly just if
+statements and researching which flags to use and syntax. 
+
+I wrote and tested the regex expression on regexr with the intention of using
+grep to select the files. First I tried using find to find all the files in the
+directory to pipe to grep, but I ran into issues with printing out the correct
+format and I had trouble handling characters like spaces. I switched to ls
+because it had the options to format the output the way the spec asked for. I
+used ls twice; once to capture bad names and second, to capture repeated names
+from the list of good names. After I tested and finsihed this component, I
+moved it into the function findBadFiles to use in the recursive case.
+
+Originally, I used find to find all directories and subdirectories and then 
+used a for loop to call the function on every directory found. Howeveer, I 
+started running into issues with the file names being too long. The function
+was marking good names as bad because it treated the entire path of the file 
+as the name, so the slashes and length would be marked as wrong. I tried
+changing the regex expression to only consider the basename and I tried using
+the basename command, but neither of these worked. Eventually, I figured out a
+way to recursively call and pass in directory paths. That allowed only the name
+to be considered while still being able to print out the full path. 
+
+There are still some bugs in the script. One of them is that it will not detect
+files and directories with the same name (in different cases) when they are
+within the same directory. This is because the ls -p appends the '/' to the
+end ofthe file names so the uniq command treats these as different names.

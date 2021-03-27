@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# extract all lines starting with '<td>'
+grep -o "<td.*" |
+
+# delete first two lines
+sed '1,4d' |
+
+# delete '?' and '<u>' and '</u>'
+sed 's/?//g;s/<u>//g;s/<\/u>//g' |
+
+# delete the '<td>' and '</td>' and empty lines
+sed 's/^<td>//;s/<\/td>$//;/^$/d' |
+
+# delete '<br>' and empty lines 
+sed 's/<br>//g;/^$/d' |
+
+sed 's/<td.*>//g' |
+
+# delete the even lines which are the English words
+sed '0~2d' |
+
+# change upper to lower, ` to ' and - to a space
+tr '[:upper:]`-' '[:lower:]'\'' ' |
+
+# squeeze all spaces together
+tr -s ' ' |
+
+# translate spaces to newlines
+tr ' ' '\n' |
+
+# remove empty lines
+sed '/^$/d' |
+
+# sort words in alphabetical order without repeat
+sort -u

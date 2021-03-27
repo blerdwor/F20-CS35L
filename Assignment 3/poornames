@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+#------helper functions--------------------------
+
+check() {
+   # check if input is a directory
+   if [ ! -d "${1}" ]; then
+      echo "Error: ${1} is not a directory" 1>&2
+      exit 1
+   fi
+
+   # check if first characters of DIR is "-"
+   if [ "${1:0:1}" = "-" ]; then
+      echo "Error: ${1} starts with '-'" 1>&2
+      exit 1
+   fi
+
+   if [ ! -r ${1} ]; then
+      echo "Error: ${1} is not readable" 1>&2
+   fi
+
+}
+
+# finds files with invalid names
+findBadFiles() {
+   
+   # check if file is valid
+   check ${1}    
+   # save poorly named files into variables 
+   badfile=`ls -1NpA "${1}" | grep -Ev \
+   "^(\.|(\.\.)|[A-Za-z_][A-Za-z._-]{0,13}\/?)$"`
+   duplicate=`ls -1NpA "${1}" | grep -E \
+   "^(\.|(\.\.)|[A-Za-z_][A-Za-z._-]{0,13}\/?)$" | sort | uniq -Di`
+   
+   # print out poorlynames files
+   IFS=$'\n'
+   for file in ${badfile};
+   do 
+      echo "${1}/${file}"
+   done
+
+   for file in ${duplicate};
+   do
+      echo "${1}/${file}"
+   done
+}
+
+# recursive poornames
+recurse() {
+    local DIR=${1}
+
+    # find all the bad files in the current 
+    findBadFiles ${DIR}
+
+    #find subdirectories and call recursive poornames on them
+    for item in `find "${DIR}" -mindepth 1 -maxdepth 1 -type d \
+    -exec basename {} \;`;
+    do
+	recurse  ${DIR}/$item
+    done
+}
+
+#------if statements and case statements--------- 
+
+# checks number of arguments
+if [ "$#" -gt 2 ]; then
+   echo "Error: more than two files given." 1>&2 
+   exit 1
+fi
+
+# check if recursive flag is set
+if [ "$1" = "-r" ]; then
+
+   DIR=$([ -n "$2" ] && echo "$2" || echo ".")
+
+   # if nothing is wrong, call recursive poornames
+   recurse ${DIR}
+
+else
+
+   DIR=$([ -n "$1" ] && echo "$1" || echo ".")
+
+   # if nothing is wrong, find the files
+   findBadFiles ${DIR} 
+
+fi
