@@ -1,0 +1,198 @@
+2. [cd diffutils]
+   [git checkout v3.0 -b quote]
+I went to the original repository that I had cloned and then checked out a new
+branch called "quote".
+
+Output:
+Switched to a new branch 'quote'
+
+3. [patch -p1 < ../patch-3.0-quote.txt]
+Then I used this command to patch the files.
+
+Output:
+patching file src/cmp.c
+patching file src/diff.c
+patching file src/diff3.c
+patching file src/dir.c
+patching file src/sdiff.c
+patching file src/util.c
+
+4. I learned how to use the add-change-log-entry-other-window function by
+reading the page on gnu.org.
+
+5. [e m a c s SP <filename>]
+   [C-x 4 a]
+   [changed accents ` to apostrophes ' in all strings except comments.]
+   [C-x C-s]
+   [C-x C-c]
+
+<filename> refers to every file that was patched in the output above. Once I
+opened the file in Emacs, I used the command to open the ChangeLog and edit it.
+The comment I added for all of them is in the 3rd line. Then I saved the file
+and closed Emacs.
+
+6. [git add .]
+   [git commit -F ChangeLog]
+Then I used these command to add the modified files to the staging area and 
+then committed them with the ChangeLog as the commit message.
+
+Output:
+[quote b74ef60] 2020-12-02  Belle Lee Lerdworatawee  <belle@lnxsrv06.seas.ucla.edu>
+Committer: Belle Lee Lerdworatawee <belle@lnxsrv06.seas.ucla.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 14 files changed, 368 insertions(+), 43 deletions(-)
+ create mode 100644 diffutils-gets.diff
+ create mode 100644 quote-3.0-test.txt
+ create mode 100644 src/cmp.c.rej
+ create mode 100644 src/diff.c.rej
+ create mode 100644 src/diff3.c.rej
+ create mode 100644 src/dir.c.rej
+ create mode 100644 src/sdiff.c.rej
+ create mode 100644 src/util.c.rej
+
+7. [git format-patch -1 --stdout > formatted-patch.txt]
+Next, I used this command to generate a patch file. It was created 
+successfully, and should work without needing to make a lot of manual changes.
+
+8. [cd ../]
+   [git clone ~eggert/src/gnu/diffutils HWdiffutils]
+   [cd HWdiffutils]
+   [git checkout v3.0 -b patchery]
+
+Output: 
+Switched to a new branch 'patchery'
+
+   [git am ../diffutils/formatted-patch.txt]
+To verify the patch, I cloned the original repository into another one in my
+directory and checked out the version 3.0 into a new branch. Then I applied the
+patch I made earlier by using git am. 
+
+Output:
+Applying: 2020-12-02 Belle Lee Lerdworatawee <belle@lnxsrv06.seas.ucla.edu>
+.git/rebase-apply/patch:40: trailing whitespace.
+
+.git/rebase-apply/patch:120: trailing whitespace.
+
+.git/rebase-apply/patch:123: space before tab in indent.
+         || (e == LONGINT_INVALID_SUFFIX_CHAR && **argptr == delimiter))
+.git/rebase-apply/patch:131: space before tab in indent.
+          _("SKIP values may be followed by the following multiplicative suffixes:\n\
+.git/rebase-apply/patch:136: space before tab in indent.
+          _("Exit status is 0 if inputs are the same, 1 if different, 2 if trouble."));
+warning: squelched 75 whitespace errors
+warning: 80 lines add whitespace errors.
+
+   [./bootstrap]
+   [wget 'https://web.cs.ucla.edu/classes/fall20/cs35L/assign/diffutils-gets.diff']
+   [patch -p0 < diffutils-gets.diff]
+   [./configure]
+   [make]
+   [make check]
+Lastly, I build this system by using the same commands as from the lab. [make]
+failed again so I needed to reapply the patch. After that, [make] worked but 
+[make check] still fails. 
+
+Error Output:
+Making check in lib
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+  GEN      configmake.h
+make  check-recursive
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+make[3]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+  GEN      configmake.h
+make[3]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/lib'
+Making check in src
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/src'
+make  check-am
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/src'
+make[2]: Nothing to be done for 'check-am'.
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/src'
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/src'
+Making check in tests
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+make  check-TESTS
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+make[3]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+/bin/sh: /bin/sh: cannot execute binary file
+make[3]: *** [Makefile:1309: basic.log] Error 126
+make[3]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+make[2]: *** [Makefile:1291: check-TESTS] Error 2
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+make[1]: *** [Makefile:1406: check-am] Error 2
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/HWdiffutils/tests'
+make: *** [Makefile:1016: check-recursive] Error 1
+
+   [./src/diff . -]
+   [./src/diff --help]
+Since [make check] failed, I manually checked the outputs of the two commands
+from the lab and the output contained no accents. So the patch worked.
+
+9. [make distdir]
+   [ls -la]
+   [cd diffutils-3.0.1-d146]
+   [ls -la]
+   [cat ChangeLog]
+After the first command, I used ls to see what new files had been created and
+there was one called diffutils-3.0.1-d146. So I went to that directory and
+listed the files inside. After inspecting the Changelog, I found that my entry
+was at the beginning so my ChangeLog entry worked.
+
+Part of Output:
+2020-12-02  Belle Lee Lerdworatawee  <belle@lnxsrv06.seas.ucla.edu>
+
+        2020-12-02 Belle Lee Lerdworatawee <belle@lnxsrv06.seas.ucla.edu>
+                * src/util.c: changed accents ` to apostrophes ' in all strings except comments.
+
+                * src/sdiff.c: changed accents ` to apostrophes ' in all strings except comments.
+
+                * src/dir.c: changed accents ` to apostrophes ' in all strings except comments.
+
+                * src/diff3.c: changed accents ` to apostrophes ' in all strings except comments.
+
+                * src/diff.c: changed accents ` to apostrophes ' in all strings except comments.
+
+                * src/cmp.c: changed accents ` to apostrophes ' in all strings except comments.
+
+9. [cd ~eggert/src/gnu/emacs-CS-35L]
+   [gitk]
+I opened Xming to make sure it was running in the background. Then I used gitk
+to see the gui version. My view of the mergepoint looks like this:
+
+| |
+| o Use gnustep-config if available
+| |
+o | merge master
+|\|
+| o
+| | (find-function-regexp): Don't match `defgroup'
+
+Paul Eggert had made a commit after Joakim and Dmitry Gutov had made one
+before. As for roles, the top window has a history of the merges and commits.
+It shows a tree with the date, authors, and short description. Then the bottom
+left window shows the commit message, ChangeLog entry, and detailed information
+about the merge or commit. The bottom right corner is reserved for comments. 
+
+
+Newest merge not newer than 2015-01-25:
+
+Author: Joakim Verona <joakim@verona.se>  2015-01-24 17:11:31
+Committer: Joakim Verona <joakim@verona.se>  2015-01-24 17:11:31
+Parent: bdd672b275034e8c1c65992f2e21dac7cc6eba60 (Merge branch 'master' into xwidget)
+Parent: bce27d884521832a62837b113f4e681974cdaccb ((find-function-regexp): Don't match `defgroup')
+Child:  d522fd8ca73e668bfafd0419bc5f71f2751cca24 (Merge branch 'master' into xwidget)
+Branches: master, remotes/origin/master and many more (254)
+Follows: emacs-24.4
+Precedes: emacs-25.0.90

@@ -1,0 +1,829 @@
+1. [git clone ~eggert/src/gnu/diffutils]
+   [cd diffutils]
+I cloned the repository using these commands and then went into the
+directory.
+
+2. [git log > git-log.txt]
+Then I retrieved the log of changes and saved it to a file.
+
+3. [git tag > git-tags.txt]
+I generated a list of tags and saved the list to a file.
+
+4. [vim git-log.txt]
+   [/maint: quote]
+   [git format-patch -1 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f --stdout > quote-patch.txt]
+To find the commit, I used Vim to scan through the file. Inside Vim, I used the
+second command to search for the commit and obtain its ID. After that, then I
+used the third command to format a patch and the option --stdout to save that
+commit into a patch file.
+
+5. [git checkout v3.0]
+I used this command to checkout to version 3.0 of Diffutils. When I tried
+checking out with the -b option, it didn't branch from version 3 and instead
+it just named the new branch v3.0 but started from the most recent commit 
+which isn't what I wanted.
+
+Output:
+
+Note: switching to 'v3.0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at 022cd5c version 3.0
+[belle@lnxsrv06 ~/CS35L/Week8/diffutils]$ git checkout -b v3.0
+Switched to a new branch 'v3.0'
+
+6. [patch -p1 < quote-patch.txt]
+Then I patched the file. Some problems I encountered were when I checked out
+the wrong branch because I got prompts for reversed file changes. Another issue
+was that some files weren't found, so I needed to skip those hunks to be
+applied. Some hunks also failed and were saved to a .rej file. I suspect that
+those were due to differing line alignments. Other than that, the patch was
+applied successfully.
+
+Output:
+can't find file to patch at input line 62
+Perhaps you used the wrong -p or --strip option?
+The text leading up to this was:
+--------------------------
+|From 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f Mon Sep 17 00:00:00 2001
+|From: Paul Eggert <eggert@cs.ucla.edu>
+|Date: Wed, 25 Jan 2012 23:46:16 -0800
+|Subject: [PATCH] maint: quote 'like this' or "like this", not `like this'
+|
+|This is in response to a recent change in the GNU coding standards,
+|which now suggest quoting 'like this' or "like this", instead of
+|`like this' or ``like this''.
+|* HACKING, NEWS, README, README-hacking, TODO, doc/diagmeet.note:
+|* doc/diffutils.texi, ms/config.bat, ms/config.site:
+|* src/analyze.c, src/cmp.c, src/context.c, src/diff.c:
+|* src/diff.h, src/diff3.c, src/dir.c, src/ifdef.c, src/io.c:
+|* src/sdiff.c, src/side.c, src/system.h, src/util.c:
+|* tests/help-version:
+|Quote 'like this' or "like this" in commentary.
+|* cfg.mk (old_NEWS_hash): Adjust to reflect new NEWS quoting.
+|* man/help2man: Update to 1.40.4 version, with quoting fixed as above.
+|* po/en.po: Remove translation involving `, as it's no longer needed.
+|* src/cmp.c (try_help, specify_ignore_initial, usage, main):
+|* src/diff.c (main, try_help, option_help_msgid, specify_value)
+|(compare_files):
+|* src/diff3.c (main, try_help, option_help_msgid, usage)
+|(read_diff):
+|* src/dir.c (compare_names):
+|* src/sdiff.c (try_help, usage, check_child_status, main):
+|* src/util.c (finish_output):
+|* tests/help-version:
+|Quote 'like this' in output.
+|---
+| HACKING            |  4 ++--
+| NEWS               | 26 +++++++++++++-------------
+| README             | 10 +++++-----
+| README-hacking     |  2 +-
+| TODO               |  2 +-
+| cfg.mk             |  2 +-
+| doc/diagmeet.note  |  2 +-
+| doc/diffutils.texi |  2 +-
+| man/help2man       | 33 +++++++++++++++++++--------------
+| ms/config.bat      |  2 +-
+| ms/config.site     |  2 +-
+| po/en.po           | 14 +++-----------
+| src/analyze.c      |  6 +++---
+| src/cmp.c          | 20 ++++++++++----------
+| src/context.c      | 10 +++++-----
+| src/diff.c         | 40 ++++++++++++++++++++--------------------
+| src/diff.h         |  8 ++++----
+| src/diff3.c        | 26 +++++++++++++-------------
+| src/dir.c          |  8 ++++----
+| src/ifdef.c        |  2 +-
+| src/io.c           |  4 ++--
+| src/sdiff.c        | 22 +++++++++++-----------
+| src/side.c         |  6 +++---
+| src/system.h       |  6 +++---
+| src/util.c         | 24 ++++++++++++------------
+| tests/help-version | 12 ++++++------
+| 26 files changed, 146 insertions(+), 149 deletions(-)
+|
+|diff --git a/HACKING b/HACKING
+|index 3a99833..522e0b5 100644
+|--- a/HACKING
+|+++ b/HACKING
+--------------------------
+File to patch:
+Skip this patch? [y] y
+Skipping patch.
+1 out of 1 hunk ignored
+patching file NEWS
+Hunk #1 succeeded at 30 (offset -28 lines).
+Hunk #2 succeeded at 66 (offset -28 lines).
+Hunk #3 succeeded at 106 (offset -28 lines).
+Hunk #4 succeeded at 140 (offset -28 lines).
+Hunk #5 succeeded at 184 (offset -28 lines).
+Hunk #6 succeeded at 197 (offset -28 lines).
+Hunk #7 succeeded at 209 (offset -28 lines).
+Hunk #8 succeeded at 221 (offset -28 lines).
+patching file README
+Hunk #1 FAILED at 9.
+Hunk #3 FAILED at 60.
+2 out of 3 hunks FAILED -- saving rejects to file README.rej
+patching file README-hacking
+Hunk #1 FAILED at 19.
+1 out of 1 hunk FAILED -- saving rejects to file README-hacking.rej
+patching file TODO
+patching file cfg.mk
+Hunk #1 FAILED at 29.
+1 out of 1 hunk FAILED -- saving rejects to file cfg.mk.rej
+patching file doc/diagmeet.note
+can't find file to patch at input line 249
+Perhaps you used the wrong -p or --strip option?
+The text leading up to this was:
+--------------------------
+|diff --git a/doc/diffutils.texi b/doc/diffutils.texi
+|index 58b140c..00403df 100644
+|--- a/doc/diffutils.texi
+|+++ b/doc/diffutils.texi
+--------------------------
+File to patch:
+Skip this patch? [y] y
+Skipping patch.
+1 out of 1 hunk ignored
+can't find file to patch at input line 262
+Perhaps you used the wrong -p or --strip option?
+The text leading up to this was:
+--------------------------
+|diff --git a/man/help2man b/man/help2man
+|index f9983f7..8bc961c 100755
+|--- a/man/help2man
+|+++ b/man/help2man
+--------------------------
+File to patch:
+Skip this patch? [y] y
+Skipping patch.
+9 out of 9 hunks ignored
+patching file ms/config.bat
+patching file ms/config.site
+Hunk #1 succeeded at 73 with fuzz 1.
+patching file po/en.po
+patching file src/analyze.c
+patching file src/cmp.c
+Hunk #1 succeeded at 36 with fuzz 1.
+Hunk #4 succeeded at 185 (offset -6 lines).
+Hunk #5 succeeded at 231 (offset -6 lines).
+Hunk #6 succeeded at 257 (offset -6 lines).
+Hunk #7 succeeded at 269 (offset -6 lines).
+Hunk #8 succeeded at 364 (offset -6 lines).
+Hunk #9 succeeded at 377 (offset -6 lines).
+patching file src/context.c
+Hunk #1 succeeded at 159 (offset 1 line).
+Hunk #2 succeeded at 289 (offset 1 line).
+Hunk #3 succeeded at 393 with fuzz 2 (offset 1 line).
+Hunk #4 succeeded at 431 (offset 1 line).
+Hunk #5 succeeded at 459 (offset 1 line).
+patching file src/diff.c
+Hunk #1 succeeded at 40 with fuzz 2 (offset -2 lines).
+Hunk #2 succeeded at 57 (offset -2 lines).
+Hunk #3 succeeded at 92 (offset -2 lines).
+Hunk #4 succeeded at 330 (offset -10 lines).
+Hunk #5 succeeded at 505 (offset -10 lines).
+Hunk #6 succeeded at 534 (offset -10 lines).
+Hunk #7 succeeded at 585 (offset -14 lines).
+Hunk #8 succeeded at 744 (offset -14 lines).
+Hunk #9 succeeded at 826 (offset -14 lines).
+Hunk #10 FAILED at 876.
+Hunk #11 FAILED at 906.
+Hunk #12 FAILED at 942.
+Hunk #13 succeeded at 960 with fuzz 2 (offset -29 lines).
+Hunk #14 succeeded at 1159 with fuzz 2 (offset -32 lines).
+3 out of 14 hunks FAILED -- saving rejects to file src/diff.c.rej
+patching file src/diff.h
+Hunk #2 succeeded at 126 with fuzz 2 (offset -13 lines).
+Hunk #3 succeeded at 202 (offset -13 lines).
+patching file src/diff3.c
+Hunk #1 succeeded at 35 (offset 1 line).
+Hunk #2 succeeded at 159 (offset 1 line).
+Hunk #3 succeeded at 316 (offset 1 line).
+Hunk #4 succeeded at 351 (offset 1 line).
+Hunk #5 succeeded at 412 (offset 1 line).
+Hunk #6 FAILED at 433.
+Hunk #7 succeeded at 460 with fuzz 2 (offset -18 lines).
+Hunk #8 succeeded at 1275 (offset -18 lines).
+Hunk #9 succeeded at 1475 (offset -18 lines).
+1 out of 9 hunks FAILED -- saving rejects to file src/diff3.c.rej
+patching file src/dir.c
+Hunk #1 succeeded at 84 (offset -1 lines).
+Hunk #2 succeeded at 125 (offset -1 lines).
+Hunk #3 succeeded at 154 (offset -1 lines).
+Hunk #4 succeeded at 234 (offset -1 lines).
+patching file src/ifdef.c
+patching file src/io.c
+patching file src/sdiff.c
+Hunk #2 succeeded at 92 (offset 1 line).
+Hunk #3 succeeded at 175 (offset 23 lines).
+Hunk #4 succeeded at 230 (offset 17 lines).
+Hunk #5 succeeded at 286 (offset 17 lines).
+Hunk #6 succeeded at 572 (offset 13 lines).
+Hunk #7 succeeded at 747 (offset 41 lines).
+patching file src/side.c
+patching file src/system.h
+Hunk #2 succeeded at 105 (offset 6 lines).
+patching file src/util.c
+Hunk #4 succeeded at 190 with fuzz 2.
+Hunk #8 succeeded at 650 (offset -27 lines).
+patching file tests/help-version
+Hunk #1 succeeded at 75 (offset 1 line).
+Hunk #2 succeeded at 85 (offset 1 line).
+Hunk #3 succeeded at 96 (offset 1 line).
+Hunk #4 succeeded at 108 (offset 1 line).
+Hunk #5 succeeded at 140 (offset 1 line).
+Hunk #6 succeeded at 188 (offset 1 line).
+
+7. [git status]
+Then I used this command to check the status of the files and see which files
+had changes.
+
+Output:
+HEAD detached at v3.0
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   NEWS
+        modified:   README
+        modified:   TODO
+        modified:   doc/diagmeet.note
+        modified:   ms/config.bat
+        modified:   ms/config.site
+        modified:   po/en.po
+        modified:   src/analyze.c
+        modified:   src/cmp.c
+        modified:   src/context.c
+        modified:   src/diff.c
+        modified:   src/diff.h
+        modified:   src/diff3.c
+        modified:   src/dir.c
+        modified:   src/ifdef.c
+        modified:   src/io.c
+        modified:   src/sdiff.c
+        modified:   src/side.c
+        modified:   src/system.h
+        modified:   src/util.c
+        modified:   tests/help-version
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        HACKING.rej
+        NEWS.orig
+        README-hacking.orig
+        README-hacking.rej
+        README.orig
+        README.rej
+        cfg.mk.orig
+        cfg.mk.rej
+        doc/diagmeet.note.rej
+        doc/diffutils.texi.rej
+        git-log.txt
+        git-tags.txt
+        man/help2man.orig
+        man/help2man.rej
+        ms/config.site.orig
+        quote-patch.txt
+        src/cmp.c.orig
+        src/context.c.orig
+        src/diff.c.orig
+        src/diff.c.rej
+        src/diff.h.orig
+        src/diff3.c.orig
+        src/diff3.c.rej
+        src/dir.c.orig
+        src/sdiff.c.orig
+        src/system.h.orig
+        src/util.c.orig
+        tests/help-version.orig
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+8. I learned how to use the Emacs commands by reading the GNU page.
+
+9. For non-.c files:
+   [e m a c s SP <filename>]
+   [C-x v u]
+   [yes]
+   [C-x C-c]
+
+<filename> = NEWS, README, TODO, doc/diagmeet.note, ms/config.bat
+             ms/config.site, po/en.po, src/diff.h, src/system.h,
+             tests/help-version
+
+   For .c files:
+   [e m a c s SP <file name>]
+   [C-x v =]
+   [C-u C-c C-a] to remove hunks that modify comments
+   [n] to skip hunks that don't modify comments
+   [C-x C-c]
+   [y] 
+
+line numbers for discarded changes in <filename>:
+src/analyze.c: all
+src/cmp.c: 36, 364, 377
+src/context.c: all
+src/diff.c: 40, 59, 92
+src/diff3.c 35, 159, 1475
+src/dir.c: 84, 125, 234, 
+src/ifdef.c: all
+src/io.c: all
+src/sdiff.c: 35, 92, 747
+src/side.c: all
+src/util.c: 27, 121, 146, 190, 241, 270, 650
+
+10. [ls src/*.c.rej]
+I used this command to find all reject files.
+
+Output: src/diff3.c.rej  src/diff.c.rej
+
+    [e m a c s SP s r c / d i f f 3 . c . r e j]
+    [C-x C-c]
+    [e m a c s SP s r c / d i f f 3 . c]
+    [C-s `]
+    [manually changing ` to ']
+
+Then I used Emacs to open the reject file and see what changes were rejected.
+Then I opened another Emacs window to manually change the ` to a ' by using 
+Emacs search.
+
+    [e m a c s SP s r c / d i f f . c . r e j]
+    [e m a c s SP s r c / d i f f . c]
+    [C-s `]
+    [manually changing the ` to ']
+I did the same thing as above for the second file.
+
+11. [mv git-log.txt ../]
+    [mv git-tags.txt ../]
+    [mv quote-patch.txt ../] 
+    [git clean -f]
+The files I created earlier don't need to be tracked by git so I moved them
+into the parent directory. Then I used the third command to remove all the
+untracked files.
+
+Output:
+Removing HACKING.rej
+Removing NEWS.orig
+Removing README-hacking.orig
+Removing README-hacking.rej
+Removing README.orig
+Removing README.rej
+Removing cfg.mk.orig
+Removing cfg.mk.rej
+Removing doc/diagmeet.note.rej
+Removing doc/diffutils.texi.rej
+Removing man/help2man.orig
+Removing man/help2man.rej
+Removing ms/config.site.orig
+Removing src/cmp.c.orig
+Removing src/context.c.orig
+Removing src/diff.c.orig
+Removing src/diff.c.rej
+Removing src/diff.h.orig
+Removing src/diff3.c.orig
+Removing src/diff3.c.rej
+Removing src/dir.c.orig
+Removing src/sdiff.c.orig
+Removing src/system.h.orig
+Removing src/util.c.orig
+Removing tests/help-version.orig
+
+12. [git status]
+This command outputted 6 modified files. 
+
+Output:
+HEAD detached at v3.0
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   src/cmp.c
+        modified:   src/diff.c
+        modified:   src/diff3.c
+        modified:   src/dir.c
+        modified:   src/sdiff.c
+        modified:   src/util.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+    [git diff > quote-3.0-patch.txt]
+    [wc -l quote-3.0-patch.txt]
+    [mv quote-3.0-patch.txt ../]
+I made the patch file and then used wc to count the number of lines and there
+are 326 lines in the patch file.
+
+Output:
+326 quote-3.0-patch.txt
+
+13. [cat README-hacking]
+    [./bootstrap]
+I built on lnxsrv06, so I didn't think I needed a patch. However, the command
+[make] was running into an error so I decided to try applying the patch.
+
+    [wget 'https://web.cs.ucla.edu/classes/fall20/cs35L/assign/diffutils-gets.diff']
+    [patch -p0 < diffutils-gets.diff]
+    [./configure]
+    [make]
+    [make check]
+
+Before applying the patch, I also changed the path from old to lib as the patch
+command was giving me an error. After I changed the path manually, I was able
+to apply the patch. [make] worked after this, but [make check] failed. I tested
+the two commands below and their outputs have ' instead of ` so Diffutils now
+does the right thing.
+
+Error Output:
+Making check in lib
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+  GEN      configmake.h
+make  check-recursive
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+make[3]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+  GEN      configmake.h
+make[3]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/lib'
+Making check in src
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/src'
+make  check-am
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/src'
+make[2]: Nothing to be done for 'check-am'.
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/src'
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/src'
+Making check in tests
+make[1]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+make  check-TESTS
+make[2]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+make[3]: Entering directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+/bin/sh: /bin/sh: cannot execute binary file
+make[3]: *** [Makefile:1309: basic.log] Error 126
+make[3]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+make[2]: *** [Makefile:1291: check-TESTS] Error 2
+make[2]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+make[1]: *** [Makefile:1406: check-am] Error 2
+make[1]: Leaving directory '/w/home.26/cs/ugrad/belle/CS35L/Week8/diffutils/tests'
+make: *** [Makefile:1016: check-recursive] Error 1
+
+    [./src/diff . -]
+Output:
+./src/diff: cannot compare '-' to a directory
+
+    [./src/diff --help]
+Output:
+Usage: ./src/diff [OPTION]... FILES
+Compare files line by line.
+
+  -i  --ignore-case  Ignore case differences in file contents.
+  --ignore-file-name-case  Ignore case when comparing file names.
+  --no-ignore-file-name-case  Consider case when comparing file names.
+  -E  --ignore-tab-expansion  Ignore changes due to tab expansion.
+  -b  --ignore-space-change  Ignore changes in the amount of white space.
+  -w  --ignore-all-space  Ignore all white space.
+  -B  --ignore-blank-lines  Ignore changes whose lines are all blank.
+  -I RE  --ignore-matching-lines=RE  Ignore changes whose lines all match RE.
+  --strip-trailing-cr  Strip trailing carriage return on input.
+  -a  --text  Treat all files as text.
+
+  -c  -C NUM  --context[=NUM]  Output NUM (default 3) lines of copied context.
+  -u  -U NUM  --unified[=NUM]  Output NUM (default 3) lines of unified context.
+    --label LABEL  Use LABEL instead of file name.
+    -p  --show-c-function  Show which C function each change is in.
+    -F RE  --show-function-line=RE  Show the most recent line matching RE.
+  -q  --brief  Output only whether files differ.
+  -e  --ed  Output an ed script.
+  --normal  Output a normal diff.
+  -n  --rcs  Output an RCS format diff.
+  -y  --side-by-side  Output in two columns.
+    -W NUM  --width=NUM  Output at most NUM (default 130) print columns.
+    --left-column  Output only the left column of common lines.
+    --suppress-common-lines  Do not output common lines.
+  -D NAME  --ifdef=NAME  Output merged file to show '#ifdef NAME' diffs.
+  --GTYPE-group-format=GFMT  Similar, but format GTYPE input groups with GFMT.
+  --line-format=LFMT  Similar, but format all input lines with LFMT.
+  --LTYPE-line-format=LFMT  Similar, but format LTYPE input lines with LFMT.
+    LTYPE is 'old', 'new', or 'unchanged'.  GTYPE is LTYPE or 'changed'.
+    GFMT may contain:
+      %<  lines from FILE1
+      %>  lines from FILE2
+      %=  lines common to FILE1 and FILE2
+      %[-][WIDTH][.[PREC]]{doxX}LETTER  printf-style spec for LETTER
+        LETTERs are as follows for new group, lower case for old group:
+          F  first line number
+          L  last line number
+          N  number of lines = L-F+1
+          E  F-1
+          M  L+1
+    LFMT may contain:
+      %L  contents of line
+      %l  contents of line, excluding any trailing newline
+      %[-][WIDTH][.[PREC]]{doxX}n  printf-style spec for input line number
+    Either GFMT or LFMT may contain:
+      %%  %
+      %c'C'  the single character C
+      %c'\OOO'  the character with octal code OOO
+
+  -l  --paginate  Pass the output through 'pr' to paginate it.
+  -t  --expand-tabs  Expand tabs to spaces in output.
+  -T  --initial-tab  Make tabs line up by prepending a tab.
+  --tabsize=NUM  Tab stops are every NUM (default 8) print columns.
+  --suppress-blank-empty  Suppress space or tab before empty output lines.
+
+  -r  --recursive  Recursively compare any subdirectories found.
+  -N  --new-file  Treat absent files as empty.
+  --unidirectional-new-file  Treat absent first files as empty.
+  -s  --report-identical-files  Report when two files are the same.
+  -x PAT  --exclude=PAT  Exclude files that match PAT.
+  -X FILE  --exclude-from=FILE  Exclude files that match any pattern in FILE.
+  -S FILE  --starting-file=FILE  Start with FILE when comparing directories.
+  --from-file=FILE1  Compare FILE1 to all operands.  FILE1 can be a directory.
+  --to-file=FILE2  Compare all operands to FILE2.  FILE2 can be a directory.
+
+  --horizon-lines=NUM  Keep NUM lines of the common prefix and suffix.
+  -d  --minimal  Try hard to find a smaller set of changes.
+  --speed-large-files  Assume large files and many scattered small changes.
+
+  -v  --version  Output version info.
+  --help  Output this help.
+
+FILES are 'FILE1 FILE2' or 'DIR1 DIR2' or 'DIR FILE...' or 'FILE... DIR'.
+If --from-file or --to-file is given, there are no restrictions on FILES.
+If a FILE is '-', read standard input.
+Exit status is 0 if inputs are the same, 1 if different, 2 if trouble.
+
+Report bugs to: bug-diffutils@gnu.org
+GNU diffutils home page: <http://www.gnu.org/software/diffutils/>
+General help using GNU software: <http://www.gnu.org/gethelp/>
+
+14. [cd ../]
+    [git clone ~eggert/src/gnu/diffutils diffutils-3.0]
+    [cd diffutils-3.0]
+    [git checkout v3.0]
+    [mv ./src/*.c .]
+    [rm -r !(*.c)]
+
+First I cloned the original repository again into a new directory. This holds
+the source code of Diffutils 3.0. After cloning the repository, I checked out
+version 3.0 and then moved all the C source files into the main directory. Then
+I removed everything that wasn't a .c file.
+
+    [cd ../]
+    [mkdir diffutils-3.0-patch]
+    [cd ../diffutils-3.0-patch]
+    [cp ../diffutils/src/*.c .]
+    [cd ../]
+    [./diffutils/src/diff -pru diffutils-3.0 diffutils-3.0-patch > quote-3.0-test.txt]
+    [vim quote-3.0-test.txt]
+
+Second, I created another directory to hold the source code of the modified
+version. Then I copied the source code from the original directory that I had
+applied the patch on into my current directory. After that, I went back up one
+directory and then performed used the modified version of diff to compare the
+two and save the output to a file. Scanning through the file, there are a lot
+of changes to the source code files, however almost eveyrthing if not all are
+changes from a ` to a ' which is minimal. The code itself wasn't modified.
+
+15. [diff quote-3.0-test.txt quote-3.0-patch.txt]
+Using the regular diff, I compared the contents of the two files. Some of the
+differences that I see are due to an ` being changed to a ' which is an
+innocuous difference.
+
+Output:
+1,4c1,5
+< diff -pru diffutils-3.0/cmp.c diffutils-3.0-patch/cmp.c
+< --- diffutils-3.0/cmp.c       2020-12-01 17:38:26.743101000 -0800
+< +++ diffutils-3.0-patch/cmp.c 2020-12-01 17:41:05.359097000 -0800
+< @@ -115,7 +115,7 @@ try_help (char const *reason_msgid, char
+---
+> diff --git a/src/cmp.c b/src/cmp.c
+> index 2455dc4..e19f013 100644
+> --- a/src/cmp.c
+> +++ b/src/cmp.c
+> @@ -115,7 +115,7 @@ try_help (char const *reason_msgid, char const *operand)
+13c14
+< @@ -134,7 +134,7 @@ specify_ignore_initial (int f, char **ar
+---
+> @@ -134,7 +134,7 @@ specify_ignore_initial (int f, char **argptr, char delimiter)
+58,128c59,62
+< diff -pru diffutils-3.0/diff3.c diffutils-3.0-patch/diff3.c
+< --- diffutils-3.0/diff3.c     2020-12-01 17:38:26.753101000 -0800
+< +++ diffutils-3.0-patch/diff3.c       2020-12-01 17:41:05.363095000 -0800
+< @@ -316,9 +316,9 @@ main (int argc, char **argv)
+<    if (argc - optind != 3)
+<      {
+<        if (argc - optind < 3)
+< -     try_help ("missing operand after `%s'", argv[argc - 1]);
+< +     try_help ("missing operand after '%s'", argv[argc - 1]);
+<        else
+< -     try_help ("extra operand `%s'", argv[optind + 3]);
+< +     try_help ("extra operand '%s'", argv[optind + 3]);
+<      }
+<
+<    file = &argv[optind];
+< @@ -351,7 +351,7 @@ main (int argc, char **argv)
+<        file instead.  */
+<        common = 3 - common;
+<        if (STREQ (file[0], "-") || STREQ (file[common], "-"))
+< -     fatal ("`-' specified for more than one input file");
+< +     fatal ("'-' specified for more than one input file");
+<      }
+<
+<    mapping[0] = 0;
+< @@ -412,7 +412,7 @@ try_help (char const *reason_msgid, char
+<    if (reason_msgid)
+<      error (0, 0, _(reason_msgid), operand);
+<    error (EXIT_TROUBLE, 0,
+< -      _("Try `%s --help' for more information."), program_name);
+< +      _("Try '%s --help' for more information."), program_name);
+<    abort ();
+<  }
+<
+< @@ -435,7 +435,7 @@ static char const * const option_help_ms
+<    "",
+<    N_("-m  --merge  Output merged file instead of ed script (default -A)."),
+<    N_("-L LABEL  --label=LABEL  Use LABEL instead of file name."),
+< -  N_("-i  Append `w' and `q' commands to ed scripts."),
+< +  N_("-i  Append 'w' and `q' commands to ed scripts."),
+<    N_("-a  --text  Treat all files as text."),
+<    N_("--strip-trailing-cr  Strip trailing carriage return on input."),
+<    N_("-T  --initial-tab  Make tabs line up by prepending a tab."),
+< @@ -460,7 +460,7 @@ usage (void)
+<      else
+<        putchar ('\n');
+<    printf ("\n%s\n%s\n",
+< -       _("If a FILE is `-', read standard input."),
+< +       _("If a FILE is '-', read standard input."),
+<         _("Exit status is 0 if successful, 1 if conflicts, 2 if trouble."));
+<    emit_bug_reporting_address ();
+<  }
+< @@ -1275,12 +1275,12 @@ read_diff (char const *filea,
+<    if (EXIT_TROUBLE <= status)
+<      error (EXIT_TROUBLE, werrno,
+<          _(status == 126
+< -          ? "subsidiary program `%s' could not be invoked"
+< +          ? "subsidiary program '%s' could not be invoked"
+<            : status == 127
+< -          ? "subsidiary program `%s' not found"
+< +          ? "subsidiary program '%s' not found"
+<            : status == INT_MAX
+< -          ? "subsidiary program `%s' failed"
+< -          : "subsidiary program `%s' failed (exit status %d)"),
+< +          ? "subsidiary program '%s' failed"
+< +          : "subsidiary program '%s' failed (exit status %d)"),
+<          diff_program, status);
+<
+<    return diff_result + total;
+< diff -pru diffutils-3.0/diff.c diffutils-3.0-patch/diff.c
+< --- diffutils-3.0/diff.c      2020-12-01 17:38:26.748101000 -0800
+< +++ diffutils-3.0-patch/diff.c        2020-12-01 17:41:05.365095000 -0800
+---
+> diff --git a/src/diff.c b/src/diff.c
+> index cc1b611..256a984 100644
+> --- a/src/diff.c
+> +++ b/src/diff.c
+177c111
+< @@ -826,7 +826,7 @@ try_help (char const *reason_msgid, char
+---
+> @@ -826,7 +826,7 @@ try_help (char const *reason_msgid, char const *operand)
+186c120
+< @@ -870,11 +870,11 @@ static char const * const option_help_ms
+---
+> @@ -870,11 +870,11 @@ static char const * const option_help_msgid[] = {
+200c134
+< @@ -895,7 +895,7 @@ static char const * const option_help_ms
+---
+> @@ -895,7 +895,7 @@ static char const * const option_help_msgid[] = {
+209c143
+< @@ -918,9 +918,9 @@ static char const * const option_help_ms
+---
+> @@ -918,9 +918,9 @@ static char const * const option_help_msgid[] = {
+221c155
+< @@ -960,7 +960,7 @@ specify_value (char const **var, char co
+---
+> @@ -960,7 +960,7 @@ specify_value (char const **var, char const *value, char const *option)
+230c164
+< @@ -1159,7 +1159,7 @@ compare_files (struct comparison const *
+---
+> @@ -1159,7 +1159,7 @@ compare_files (struct comparison const *parent,
+239,242c173,246
+< diff -pru diffutils-3.0/dir.c diffutils-3.0-patch/dir.c
+< --- diffutils-3.0/dir.c       2020-12-01 17:38:26.755101000 -0800
+< +++ diffutils-3.0-patch/dir.c 2020-12-01 17:41:05.367096000 -0800
+< @@ -154,7 +154,7 @@ compare_names (char const *name1, char c
+---
+> diff --git a/src/diff3.c b/src/diff3.c
+> index 0f11fdc..885a194 100644
+> --- a/src/diff3.c
+> +++ b/src/diff3.c
+> @@ -316,9 +316,9 @@ main (int argc, char **argv)
+>    if (argc - optind != 3)
+>      {
+>        if (argc - optind < 3)
+> -     try_help ("missing operand after `%s'", argv[argc - 1]);
+> +     try_help ("missing operand after '%s'", argv[argc - 1]);
+>        else
+> -     try_help ("extra operand `%s'", argv[optind + 3]);
+> +     try_help ("extra operand '%s'", argv[optind + 3]);
+>      }
+>
+>    file = &argv[optind];
+> @@ -351,7 +351,7 @@ main (int argc, char **argv)
+>        file instead.  */
+>        common = 3 - common;
+>        if (STREQ (file[0], "-") || STREQ (file[common], "-"))
+> -     fatal ("`-' specified for more than one input file");
+> +     fatal ("'-' specified for more than one input file");
+>      }
+>
+>    mapping[0] = 0;
+> @@ -412,7 +412,7 @@ try_help (char const *reason_msgid, char const *operand)
+>    if (reason_msgid)
+>      error (0, 0, _(reason_msgid), operand);
+>    error (EXIT_TROUBLE, 0,
+> -      _("Try `%s --help' for more information."), program_name);
+> +      _("Try '%s --help' for more information."), program_name);
+>    abort ();
+>  }
+>
+> @@ -435,7 +435,7 @@ static char const * const option_help_msgid[] = {
+>    "",
+>    N_("-m  --merge  Output merged file instead of ed script (default -A)."),
+>    N_("-L LABEL  --label=LABEL  Use LABEL instead of file name."),
+> -  N_("-i  Append `w' and `q' commands to ed scripts."),
+> +  N_("-i  Append 'w' and `q' commands to ed scripts."),
+>    N_("-a  --text  Treat all files as text."),
+>    N_("--strip-trailing-cr  Strip trailing carriage return on input."),
+>    N_("-T  --initial-tab  Make tabs line up by prepending a tab."),
+> @@ -460,7 +460,7 @@ usage (void)
+>      else
+>        putchar ('\n');
+>    printf ("\n%s\n%s\n",
+> -       _("If a FILE is `-', read standard input."),
+> +       _("If a FILE is '-', read standard input."),
+>         _("Exit status is 0 if successful, 1 if conflicts, 2 if trouble."));
+>    emit_bug_reporting_address ();
+>  }
+> @@ -1275,12 +1275,12 @@ read_diff (char const *filea,
+>    if (EXIT_TROUBLE <= status)
+>      error (EXIT_TROUBLE, werrno,
+>          _(status == 126
+> -          ? "subsidiary program `%s' could not be invoked"
+> +          ? "subsidiary program '%s' could not be invoked"
+>            : status == 127
+> -          ? "subsidiary program `%s' not found"
+> +          ? "subsidiary program '%s' not found"
+>            : status == INT_MAX
+> -          ? "subsidiary program `%s' failed"
+> -          : "subsidiary program `%s' failed (exit status %d)"),
+> +          ? "subsidiary program '%s' failed"
+> +          : "subsidiary program '%s' failed (exit status %d)"),
+>          diff_program, status);
+>
+>    return diff_result + total;
+> diff --git a/src/dir.c b/src/dir.c
+> index 5b4eaec..5e08318 100644
+> --- a/src/dir.c
+> +++ b/src/dir.c
+> @@ -154,7 +154,7 @@ compare_names (char const *name1, char const *name2)
+251,258c255,259
+< Only in diffutils-3.0: .git
+< Only in diffutils-3.0: .gitignore
+< Only in diffutils-3.0: .gitmodules
+< Only in diffutils-3.0: .prev-version
+< diff -pru diffutils-3.0/sdiff.c diffutils-3.0-patch/sdiff.c
+< --- diffutils-3.0/sdiff.c     2020-12-01 17:38:26.764101000 -0800
+< +++ diffutils-3.0-patch/sdiff.c       2020-12-01 17:41:05.376096000 -0800
+< @@ -175,7 +175,7 @@ try_help (char const *reason_msgid, char
+---
+> diff --git a/src/sdiff.c b/src/sdiff.c
+> index 4344e8d..5bbecd8 100644
+> --- a/src/sdiff.c
+> +++ b/src/sdiff.c
+> @@ -175,7 +175,7 @@ try_help (char const *reason_msgid, char const *operand)
+276c277
+< @@ -286,12 +286,12 @@ check_child_status (int werrno, int wsta
+---
+> @@ -286,12 +286,12 @@ check_child_status (int werrno, int wstatus, int max_ok_status,
+305,307c306,309
+< diff -pru diffutils-3.0/util.c diffutils-3.0-patch/util.c
+< --- diffutils-3.0/util.c      2020-12-01 17:38:26.770101000 -0800
+< +++ diffutils-3.0-patch/util.c        2020-12-01 17:41:05.379096000 -0800
+---
+> diff --git a/src/util.c b/src/util.c
+> index 3be03e9..d18bf38 100644
+> --- a/src/util.c
+> +++ b/src/util.c
+325d326
+< Only in diffutils-3.0: .x-sc_space_tab
