@@ -1,0 +1,90 @@
+[touch .hidden notHidden]
+[ls -aA]
+I tested the bug with this command and it outputted . and ..
+
+[/usr/bin/ls --version]
+I checked the version and it was 8.22
+
+[gpg --verify --keyring ./gnu-keyring.gpg coreutils-8.29.tar.xz.sig]
+First, I downloaded the 3 files (keyring, signature, and tarball) and 
+then transferred them to SEASnet with WinSCP. I used this command to 
+check the signature, and it outputted who the signatures were from. There 
+were no errors but there was a warning that the key was not certified.
+Output:
+gpg: Signature made Wed 27 Dec 2017 10:29:05 AM PST using RSA key ID 306037D9
+gpg: Good signature from "Pádraig Brady <P@draigBrady.com>"
+gpg:                 aka "Pádraig Brady <pbrady@redhat.com>"
+gpg:                 aka "Pádraig Brady <pixelbeat@gnu.org>"
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 6C37 DC12 121A 5006 BC1D  B804 DF6F D971 3060 37D9
+
+[tar xfJ coreutils-8.29.tar.xz]
+This compiled the coreutils file and created a new directory called
+coreutils-8.29 with all of its content.
+
+[cd coreutils-8.29]
+[cat INSTALL]
+I went into the directory and read the installation manual. It gave
+instructions for how to install the coreutils and modify the command
+so that it will download into a file.
+
+[cd ..]
+[mkdir coreutils]
+[cd coreutils-8.29]
+[./configure --prefix=/u/cs/ugrad/belle/CS35L/Week4/coreutils && make
+ && make install]
+I made a directory to save the file into and the [--prefix] allows me to change
+where I store the file. This outputted a lot of installation messages and took
+a couple of minutes.
+
+[cd ..]
+[coreutils/bin/ls -aA]
+[coreutils/bin/ls -Aa]
+The coreutils before the patch still outputs . and .. along with the other
+files. Both of the commands output . and .. regardless of the order of the 
+option.
+
+[mv 0001-ls-A-now-overrides-a.patch coreutils-8.29]
+[cd coreutils-8.29]
+[patch -p1 < 0001-ls-A-now-overrides-a.patch]
+I moved the patch file into the directory with the ls command so that I could
+apply the patch file using the 3rd command above.
+
+Output:
+patching file NEWS
+Hunk #1 FAILED at 4.
+1 out of 1 hunk FAILED -- saving rejects to file NEWS.rej
+patching file src/ls.c
+Hunk #1 succeeded at 1900 (offset -3 lines).
+patching file tests/local.mk
+patching file tests/ls/a-option.sh
+
+[make]
+This resulted in an error:
+cd . && /bin/sh /u/cs/ugrad/belle/CS35L/Week4/coreutils-8.29/build-aux/missing
+\ automake-1.15 --gnu Makefile
+/u/cs/ugrad/belle/CS35L/Week4/coreutils-8.29/build-aux/missing: line 81: automak
+\ e-1.15: command not found
+WARNING: 'automake-1.15' is missing on your system.
+         You should only need it if you modified 'Makefile.am' or
+         'configure.ac' or m4 files included by 'configure.ac'.
+         The 'automake' program is part of the GNU Automake package:
+         <http://www.gnu.org/software/automake>
+         It also requires GNU Autoconf, GNU m4 and Perl in order to run:
+         <http://www.gnu.org/software/autoconf>
+         <http://www.gnu.org/software/m4/>
+         <http://www.perl.org/>
+make: *** [Makefile:5997: Makefile.in] Error 127
+
+[autoreconf -fi]
+I used this command as per the lab hints to resolve the error.
+
+[make]
+Then I tried this command again, and it outputted many checking messages.
+It also took a couple of minutes to process the entire thing.
+
+[src/ls -Aa]
+[src/ls -aA]
+The first command outputted the . and .. files, but the second one didn't.
+The patch worked because now the order of the flags can override each other.

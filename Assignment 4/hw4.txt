@@ -1,0 +1,58 @@
+Q1. 
+The real time that it takes the faulty ls to run is 0.003s on average.
+The real time that it takes the patched ls to run is also 0.003s on average. 
+In terms of performance, there isn't much difference (the user and sys are
+also comparable at about 0.000s and 0.002s).
+The patch fixes the flag overriding error, so I think it improves the
+performance of ls as now it behaves as it should.
+
+Q2.
+The thing that my company needs to look out for is making sure that the order
+in which they specify the -a and -A flags is what they intended to do.
+Other than that, there's not much else to look out for.
+The new version might cause problems with scripts written beforehand that
+didn't take the ordering of the flags into account. Because the -a and -A
+not can override each other, an output or intermediate process of a script 
+might have 2 additonal or 2 missing lines.
+This could potentially mess up the entire script if order is crucial to
+that script.
+
+Q3. It causes this error message:
+
+Error:
+Traceback (most recent call last):
+  File "./randline.py", line 70, in <module>
+    main()
+  File "./randline.py", line 64, in main
+    sys.stdout.write(generator.chooseline())
+  File "./randline.py", line 34, in chooseline
+    return random.choice(self.lines)
+  File "/usr/lib64/python2.7/random.py", line 274, in choice
+    return seq[int(self.random()*len(seq))]  # raises IndexError if seq is empty
+IndexError: list index out of range
+
+I think this error message is due to the fact that dev/null is an empty file.
+So there's nothing for it to be called on, and so seq doesn't have a length.
+
+Q4. 
+
+Error: 
+  File "/w/home.26/cs/ugrad/belle/CS35L/Week4/randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+
+I think this error is due to Python backwards compatibility issues.
+Exceptions in Python2 are iterable, but not in Python3.
+So the correct syntax should actually be [except IOError as err] and then
+you can iterate over the exception by calling setting variables equal 
+to err.args.
+
+Q5.
+Most of the time, shuf.py is compatible with both python2 and 3.
+When I try to invoke the -i option using python2, it raises an error with 
+the input range.
+I suspect that that has to do with the isnumeric() method.
+isnumeric() is only for unicode objects and the type that I saved the input
+range into is string. 
+So they're not compatible.
