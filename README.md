@@ -2,7 +2,7 @@
 These are my solutions to the projects for CS 35L - Software Construction Lab, taken during Fall 2020.
 
 Taught by Professor Paul Eggert. 
-http://web.cs.ucla.edu/classes/fall20/cs35L/
+https://web.cs.ucla.edu/classes/fall20/cs35L/
 
 | Assignment | Name                                            | Score |
 | ---------- | ----------------------------------------------- | ------|
