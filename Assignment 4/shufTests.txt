@@ -1,0 +1,68 @@
+test cases:
+P1.
+python3 shuf.py
+
+P2.
+python3 shuf.py num.txt
+python3 shuf.py -
+
+P3.
+python3 shuf.py -i 0-10
+python3 shuf.py -i 8-8
+
+should cause Errors:
+python3 shuf.py num.txt -i 0-10
+python3 shuf.py -i 0-10 num.txt
+python3 shuf.py -i 10-0
+python3 shuf.py - num.txt
+
+P4.
+python3 shuf.py -n 3
+python3 shuf.py -n 3 num.txt
+python3 shuf.py num.txt -n 3
+python3 shuf.py -n 3 -i 0-10
+python3 shuf.py -i 0-10 -n 3
+python3 shuf.py -n 20 -i 0-10
+python3 shuf.py -i 0-10 -n 20
+python3 shuf.py -n 20 num.txt
+python3 shuf.py num.txt -n 20
+
+should cause Errors:
+python3 shuf.py -n 3 num.txt -i 0-10
+python3 shuf.py -n 3 -i 0-10 num.txt
+python3 shuf.py num.txt -n 3 -i 0-10
+python3 shuf.py -i 0-10 -n 3 num.txt
+python3 shuf.py num.txt -i 0-10 -n 3
+python3 shuf.py -i 0-10 num.txt -n 3
+python3 shuf.py -n a
+
+P5.
+python3 shuf.py -r 
+python3 shuf.py -r num.txt
+python3 shuf.py num.txt -r
+python3 shuf.py -i 0-10 -r
+python3 shuf.py -r -i 0-10
+python3 shuf.py -r -n 3 
+python3 shuf.py -n 3 -r
+python3 shuf.py -r -n 3 -i 0-10
+python3 shuf.py -n 3 -r -i 0-10
+python3 shuf.py -i 0-10 -n 3 -r 
+python3 shuf.py -i 0-10 -r -n 3
+python3 shuf.py -n 3 -i 0-10 -r 
+python3 shuf.py -r -i 0-10 -n 3
+python3 shuf.py -r -n 3 num.txt
+python3 shuf.py -r num.txt -n 3
+python3 shuf.py -n 3 num.txt -r
+python3 shuf.py -n 3 -r num.txt
+python3 shuf.py num.txt -r -n 3
+python3 shuf.py num.txt -n 3 -r
+python3 shuf.py -i 0-8 -r -n 10
+
+should cause Errors:
+python3 shuf.py -r -n 3 num.txt -i 0-10
+python3 shuf.py -r -n 3 -i 0-10 num.txt
+python3 shuf.py num.txt -n 3 -i 0-10 -r
+python3 shuf.py -i 0-10 -n 3 num.txt -r
+python3 shuf.py num.txt -r -i 0-10 -n 3
+python3 shuf.py -i 0-10 -r num.txt -n 3
+
